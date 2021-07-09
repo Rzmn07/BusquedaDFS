@@ -1,14 +1,14 @@
 <?php
-function imprimir($matriz,$num){ #permite imprimir la matriz
-    for($i = 0; $i < $num; $i++){
-        for($j = 0; $j < $num; $j++){
-            echo "{$matriz[$i][$j]}";
+function imprimir($matriz,$numero){ #permite imprimir la matriz
+    foreach(range(0,$numero) as $row){
+        foreach(range(0,$numero) as $col){
+            echo $matriz[$row][$col];
         }
     }
     echo "\n";
 }
-echo "(0) Usar archivo matriz.txt\n(1) Usar otro texto";
-$opcion = readline("\nIngrese opcion: ");
+echo "(0) Usar archivo matriz.txt\n(1) Usar otro texto\n";
+$opcion = readline("Ingrese opcion: ");
 if($opcion == 0){
     $thefile = "matriz.txt";
 }else{
@@ -31,13 +31,16 @@ function crear_matriz($gmat,$numero){
     }
     return $gmat;
 }
-$matriz = crear_matriz($matrizDFS,$numero); #genera una matriz numero x numero (arreglo x arreglo) con valor de 0s, esta sirve para almacenar los valores de la funcion recursiva generar_DFS
+$gmat = array();
+$padre = array($numero);
+$matrizDFS = crear_matriz($gmat,$numero); #genera una matriz numero x numero (arreglo x arreglo) con valor de 0s, esta sirve para almacenar los valores de la funcion recursiva generar_DFS
+$matriz = crear_matriz($matrizDFS,$numero);
 function generar_DFS($indice,$mat,$numero){ #genera una matriz global numero X numero lleno de 0's, esta sirve para almacenar los valores de la funcion recursiva generar_DFS
-    $padre = array($indice);
     $padre[$indice] = 1;
-    foreach(range(0,$numero) as $i){
+    vardump($numero);
+    for($i = 0; $i<$numero; $i++){
         if($i == $indice){
-            foreach(range(0,$numero) as $j){
+            for($j = 0; $j<$numero; $j++){
                 if($mat[$i][$j]==1 && $padre[$j]==0){ #si el vertice inicial esta conectado al vertice final y este no fue visitado
                     $matrizDFS[$i][$j] = 1;
                     generar_DFS($j,$mat,$numero);
@@ -53,33 +56,36 @@ crear_matriz($matriz,$numero);
 
 #Importar datos de file "matriz.txt"
 foreach(range(0,$numero) as $row){
-    $array = explode("\t",fread($fp, filesize($thefile))); #leer cada linea del file, cada elemento separado por una tabulacion \t
+    $array = file($thefile,FILE_IGNORE_NEW_LINES); #leer cada linea del file, cada elemento separado por una tabulacion \t
     foreach(range(0,$numero) as $col){
         $matriz[$row][$col] = $array[$col];
     }
     $padre[$row] = 0;
 }
 
-echo "---------------------------------------------------------------------------\n\n";
+echo("---------------------------------------------------------------------------\n\n");
 
-echo "Martiz del grafo: \n";
+echo("Martiz del grafo: \n");
 imprimir($matriz,$numero); #Imprimir la matriz de adyacencia
 
-for($y = 0; $y < $numero; $y++){
+$n = $numero - 1;
+foreach(range(0,$n) as $y){
     if($y <= 25){
-        echo $y." Vertice ".chr(65+$y).".";
+        echo($y." Vertice ".chr(65+$y).".\n");
     }else{
         $label = "";
-        for($v = 0; $v <= ((65 + $y) / 26); $v++){
+        foreach(range(0,((65+$y)/26)) as $v){
             $label += ((65+$v)/26);
         }
-        echo $y." Vertice ".chr($label).".";
+        echo($y." Vertice ".chr($label).".\n");
     }
 }
 echo "\n\n---------------------------------------------------------------------------\n\n";
-$indice = readline("Ingrese el numero del vertice de inicio de la busqueda: ");
+$ind = readline("Ingrese el numero del vertice de inicio de la busqueda: ");
+$indice = (int) $ind; //convertir dato de entrada a entero
 while($indice > $n){
-    $indice = readline("Error: Numero de vertices excedido.\nIntente otra vez: ");
+    $ind = readline("Error: Numero de vertices excedido.Intente otra vez: \n");
+    $indice = (int) $ind;
 }
 echo "\nMatriz DFS: \n";
 $matrizresultante = generar_DFS($indice, $matriz, $numero);
