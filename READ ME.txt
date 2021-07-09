@@ -1,0 +1,10 @@
+Instalar PHP:
+https://www.php.net/downloads
+
+Instalar Visual Studio Code:
+https://code.visualstudio.com/
+
+Ejecutar el archivo php_#version.rar
+
+Cargar la carpeta PHP en variables de entorno del sistema
+segun la direccion donde se extrajo el php_#version.rar
